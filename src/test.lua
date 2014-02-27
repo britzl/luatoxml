@@ -123,7 +123,50 @@ local test = {
 	}
 }
 
-print(luatoxml.toxml(test))
-print(luatoxml.toxml("astring"))
-print(luatoxml.toxml({"atag","atag","btag","ctag", dtag = { attr = "dval", battr = "dval", ddtag = { attr = "abc" } }}))
-print(luatoxml.toxml(1234))
+--print(luatoxml.toxml(test))
+--print(luatoxml.toxml("astring"))
+--print(luatoxml.toxml({"atag","atag","btag","ctag", dtag = { attr = "dval", battr = "dval", ddtag = { attr = "abc" } }}))
+--print(luatoxml.toxml(1234))
+
+
+
+local luaobj = {
+	root = {
+		children = {
+			{
+				tag = {
+					foo = "bar",
+					boo = "far",
+				}
+			},
+			{
+				tag = {
+					foo = "bar",
+					boo = "far",
+					"value"
+				}
+			},
+			{
+				tag = {
+					foo = "bar",
+					boo = "far",
+					{ "emptychild" }
+				}
+			},
+			{
+				tag = {
+					foo = "bar",
+					boo = "far",
+					"emptychild1",
+					"emptychild2"
+				}
+			},
+			{
+				tag = "value"
+			},
+			"emptytag"
+		}
+	}
+}
+
+print(luatoxml.toxml(luaobj))
