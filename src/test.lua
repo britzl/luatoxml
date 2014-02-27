@@ -123,4 +123,7 @@ local test = {
 	}
 }
 
-luatoxml.toxml(test)
+print(luatoxml.toxml(test))
+print(luatoxml.toxml("astring"))
+print(luatoxml.toxml({"atag","atag","btag","ctag", dtag = { attr = "dval", battr = "dval", ddtag = { attr = "abc" } }}))
+print(luatoxml.toxml(1234))

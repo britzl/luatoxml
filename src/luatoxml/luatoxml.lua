@@ -11,7 +11,7 @@ local indentation = ""
 --  * If the key is a string and value is a table a tag will be created with the key as XML tag element and the table values as XML-attributes and nested tags (eg <key a="b"><c... </key> 
 -- @param value The value to parse
 -- @return The value as XML
-local function parse(value)
+local function toxml(value)
 	local xml = ""
 	local t = type(value)
 	if t == "string" then
@@ -19,7 +19,7 @@ local function parse(value)
 	elseif t == "table" then
 		for name,data in pairs(value) do
 			if type(name) == "number" then
-				xml = xml .. parse(data)
+				xml = xml .. toxml(data)
 			else
 				xml = xml .. indentation .. "<" .. name				
 				if type(data) == "table" then	
@@ -28,7 +28,7 @@ local function parse(value)
 						local t = type(v)
 						if t == "table" then
 							tags[k] = v
-						else
+						elseif type(k) == "string" then
 							xml = xml .. " " ..k .. '="' .. tostring(v) .. '"'
 						end
 					end
@@ -36,7 +36,7 @@ local function parse(value)
 					if next(tags) ~= nil then	
 						xml = xml .. ">\n"
 						indentation = indentation .. "\t"
-						xml = xml .. parse(tags)
+						xml = xml .. toxml(tags)
 						indentation = indentation:sub(1,#indentation-1)
 						xml = xml .. indentation .. "</" .. name .. ">\n"
 					else
@@ -49,15 +49,6 @@ local function parse(value)
 		end
 	end
 	return xml
-end
-
-
-
-local function toxml(luatable)
-	local xml = parse(luatable)
-	print(xml)
-
-
 end
 
 
