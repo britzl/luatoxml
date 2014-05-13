@@ -1,4 +1,4 @@
-require "luatoxml.luatoxml"
+local luatoxml = require "luatoxml.luatoxml"
 
 local luaobj = {
 	root = {

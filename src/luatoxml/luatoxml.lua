@@ -1,4 +1,6 @@
-luatoxml = {}
+---
+-- Lua to XML converter module. Will parse a lua table and convert it to formatted XML
+local M = {}
 
 
 local indentation = ""
@@ -20,7 +22,7 @@ local function toxml(value)
 		for name,data in pairs(value) do
 			-- if the table key is numeric it's value is parsed
 			if type(name) == "number" then
-				xml = xml .. toxml(data)
+				xml = xml .. M.toxml(data)
 			else
 				xml = xml .. indentation .. "<" .. name
 				if type(data) == "table" then
@@ -41,8 +43,8 @@ local function toxml(value)
 					if next(children) ~= nil or #number_strings > 1 then
 						xml = xml .. ">\n"
 						indentation = indentation .. "\t"
-						xml = xml .. toxml(children)
-						xml = xml .. toxml(number_strings)
+						xml = xml .. M.toxml(children)
+						xml = xml .. M.toxml(number_strings)
 						indentation = indentation:sub(1,#indentation-1)
 						xml = xml .. indentation .. "</" .. name .. ">\n"
 					else
@@ -62,4 +64,6 @@ local function toxml(value)
 end
 
 
-luatoxml.toxml = toxml
+M.toxml = toxml
+
+return M
