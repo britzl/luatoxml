@@ -66,7 +66,7 @@
 --         <emptytag/>
 --     </children>
 -- </root>
-local luatoxml = {}
+local M = {}
 
 local indentation = ""
 
@@ -78,7 +78,7 @@ local indentation = ""
 --  * If the key is a string and value is a table a tag will be created with the key as XML tag element and the table values as XML-attributes and nested tags (eg <key a="b"><c... </key>
 -- @param value The value to parse
 -- @return The value as XML
-function luatoxml.toxml(value)
+function M.toxml(value)
 	local xml = ""
 	local t = type(value)
 	if t == "string" then
@@ -87,7 +87,7 @@ function luatoxml.toxml(value)
 		for name,data in pairs(value) do
 			-- if the table key is numeric it's value is parsed
 			if type(name) == "number" then
-				xml = xml .. luatoxml.toxml(data)
+				xml = xml .. M.toxml(data)
 			else
 				xml = xml .. indentation .. "<" .. name
 				if type(data) == "table" then
@@ -108,8 +108,8 @@ function luatoxml.toxml(value)
 					if next(children) ~= nil or #number_strings > 1 then
 						xml = xml .. ">\n"
 						indentation = indentation .. "\t"
-						xml = xml .. luatoxml.toxml(children)
-						xml = xml .. luatoxml.toxml(number_strings)
+						xml = xml .. M.toxml(children)
+						xml = xml .. M.toxml(number_strings)
 						indentation = indentation:sub(1,#indentation-1)
 						xml = xml .. indentation .. "</" .. name .. ">\n"
 					else
@@ -128,4 +128,4 @@ function luatoxml.toxml(value)
 	return xml
 end
 
-return luatoxml
+return M
