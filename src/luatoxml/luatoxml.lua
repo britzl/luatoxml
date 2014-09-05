@@ -1,5 +1,72 @@
-luatoxml = {}
-
+--- Converts a Lua value (table) into properly formatted XML
+-- From https://github.com/britzl/luatoxml
+-- @module luatoxml
+-- @usage
+-- Consider the following Lua table:
+-- 
+-- local luaobj = {
+--     root = {
+--         children = {
+--             {
+--                 tag = {
+--                     foo = "bar",
+--                     boo = "far",
+--                 }
+--             },
+--             {
+--                 tag = {
+--                     foo = "bar",
+--                     boo = "far",
+--                     "value"
+--                 }
+--             },
+--             {
+--                 tag = {
+--                     foo = "bar",
+--                     boo = "far",
+--                     { "emptychild" }
+--                 }
+--             },
+--             {
+--                 tag = {
+--                     foo = "bar",
+--                     boo = "far",
+--                     "emptychild1",
+--                     "emptychild2"
+--                 }
+--             },
+--             {
+--                 tag = "value"
+--             },
+--             "emptytag"
+--         }
+--     }
+-- }
+--
+-- Parse it like this:
+-- 
+-- local luatoxml = require("luatoxml")
+-- local xml = luatoxml.toxml(luaobj)
+-- print(xml)
+--
+-- Resulting output:
+-- 
+-- <root>
+--     <children>
+--         <tag boo="far" foo="bar"/>
+--         <tag boo="far" foo="bar">value</tag>
+--         <tag boo="far" foo="bar">
+--             <emptychild/>
+--         </tag>
+--         <tag boo="far" foo="bar">
+--             <emptychild1/>
+--             <emptychild2/>
+--         </tag>
+--         <tag>value</tag>
+--         <emptytag/>
+--     </children>
+-- </root>
+local luatoxml = {}
 
 local indentation = ""
 
@@ -11,7 +78,7 @@ local indentation = ""
 --  * If the key is a string and value is a table a tag will be created with the key as XML tag element and the table values as XML-attributes and nested tags (eg <key a="b"><c... </key>
 -- @param value The value to parse
 -- @return The value as XML
-local function toxml(value)
+function luatoxml.toxml(value)
 	local xml = ""
 	local t = type(value)
 	if t == "string" then
@@ -20,7 +87,7 @@ local function toxml(value)
 		for name,data in pairs(value) do
 			-- if the table key is numeric it's value is parsed
 			if type(name) == "number" then
-				xml = xml .. toxml(data)
+				xml = xml .. luatoxml.toxml(data)
 			else
 				xml = xml .. indentation .. "<" .. name
 				if type(data) == "table" then
@@ -41,8 +108,8 @@ local function toxml(value)
 					if next(children) ~= nil or #number_strings > 1 then
 						xml = xml .. ">\n"
 						indentation = indentation .. "\t"
-						xml = xml .. toxml(children)
-						xml = xml .. toxml(number_strings)
+						xml = xml .. luatoxml.toxml(children)
+						xml = xml .. luatoxml.toxml(number_strings)
 						indentation = indentation:sub(1,#indentation-1)
 						xml = xml .. indentation .. "</" .. name .. ">\n"
 					else
@@ -61,5 +128,4 @@ local function toxml(value)
 	return xml
 end
 
-
-luatoxml.toxml = toxml
+return luatoxml
